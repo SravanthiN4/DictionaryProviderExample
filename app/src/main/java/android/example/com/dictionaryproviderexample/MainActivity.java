@@ -18,12 +18,12 @@ package android.example.com.dictionaryproviderexample;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.UserDictionary;
 import android.provider.UserDictionary.Words;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBarActivity;
-import android.widget.ListView;
+import android.widget.TextView;
 
 /**
  * This is the central activity for the Provider Dictionary Example App. The purpose of this app is
@@ -49,10 +49,10 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         // Get the TextView which will be populated with the Dictionary ContentProvider data.
-        ListView dictListView = (ListView) findViewById(R.id.dictionary_list_view);
+       // ListView dictListView = (ListView) findViewById(R.id.dictionary_list_view);
 
-        // Get the ContentResolver which will send a message to the ContentProvider
-        ContentResolver resolver = getContentResolver();
+        TextView dictTextView = (TextView)findViewById(R.id.dictionary_text_view);
+
 
         ContentValues newValues = new ContentValues();
 
@@ -60,25 +60,48 @@ public class MainActivity extends ActionBarActivity {
         newValues.put(Words.WORD, "test");
         newValues.put(Words.FREQUENCY, "10");
 
+        // Get the ContentResolver which will send a message to the ContentProvider
+        ContentResolver resolver = getContentResolver();
+
+
+        Uri result = resolver.insert(UserDictionary.Words.CONTENT_URI,newValues);
+
 
 
         // Get a Cursor containing all of the rows in the Words table
         Cursor cursor = resolver.query(UserDictionary.Words.CONTENT_URI, null, null, null, null);
-        
+
 
         // -- YOUR CODE BELOW HERE -- //
 
-        // Set the Adapter to fill the standard two_line_list_item layout with data from the Cursor.
-        SimpleCursorAdapter adapter = null;
-        adapter = new SimpleCursorAdapter(this,
-                android.R.layout.two_line_list_item,
-                cursor,
-                COLUMNS_TO_BE_BOUND,
-                LAYOUT_ITEMS_TO_FILL,
-                0);
+        try {
+            dictTextView.setText("UserDictionary contains " + cursor.getCount() + " words\n");
+            dictTextView.append("COLUMNS: " + Words._ID  + " - " + Words.FREQUENCY +
+                    " - " + Words.WORD);
+            int idColumn = cursor.getColumnIndex(UserDictionary.Words._ID);
+            int frequencyColumn = cursor.getColumnIndex(UserDictionary.Words.FREQUENCY);
+            int wordColumn = cursor.getColumnIndex(UserDictionary.Words.WORD);
+            while (cursor.moveToNext()) {
+                int id = cursor.getInt(idColumn);
+                int frequency = cursor.getInt(frequencyColumn);
+                String word = cursor.getString(wordColumn);
+                dictTextView.append(("\n" + id + " - " + frequency + " - " + word));
+            }
+        } finally {
+            cursor.close();
+        }
 
-        // Attach the adapter to the ListView.
-        dictListView.setAdapter(adapter);
+//        // Set the Adapter to fill the standard two_line_list_item layout with data from the Cursor.
+//        SimpleCursorAdapter adapter = null;
+//        adapter = new SimpleCursorAdapter(this,
+//                android.R.layout.two_line_list_item,
+//                cursor,
+//                COLUMNS_TO_BE_BOUND,
+//                LAYOUT_ITEMS_TO_FILL,
+//                0);
+//
+//        // Attach the adapter to the ListView.
+//        dictListView.setAdapter(adapter);
 
 
     }
