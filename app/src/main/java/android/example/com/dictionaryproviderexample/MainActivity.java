@@ -16,13 +16,14 @@
 package android.example.com.dictionaryproviderexample;
 
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.UserDictionary;
 import android.provider.UserDictionary.Words;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.ActionBarActivity;
 import android.widget.ListView;
-import android.support.v4.widget.SimpleCursorAdapter;
 
 /**
  * This is the central activity for the Provider Dictionary Example App. The purpose of this app is
@@ -53,8 +54,17 @@ public class MainActivity extends ActionBarActivity {
         // Get the ContentResolver which will send a message to the ContentProvider
         ContentResolver resolver = getContentResolver();
 
+        ContentValues newValues = new ContentValues();
+
+        newValues.put(Words._ID, "my_app_id");
+        newValues.put(Words.WORD, "test");
+        newValues.put(Words.FREQUENCY, "10");
+
+
+
         // Get a Cursor containing all of the rows in the Words table
         Cursor cursor = resolver.query(UserDictionary.Words.CONTENT_URI, null, null, null, null);
+        
 
         // -- YOUR CODE BELOW HERE -- //
 
