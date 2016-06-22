@@ -54,7 +54,7 @@ public class MainActivity extends ActionBarActivity {
             dictTextView.setText("The User Dictionary contains "+numWords+ " words");
             dictTextView.append("COLUMNS: " +Words._ID +"-"+Words.FREQUENCY+"-"+Words.WORD);
 
-            Log.v("Cursor Length:", "Cursor_length :" + String.valueOf(cursor.getCount()));
+            Log.v("Cursor Length:", "Cursor_length :" + String.valueOf(numWords));
 
             // Get the index of the column containing the actual words, using
             // UserDictionary.Words.WORD, which is the header of the word column.
